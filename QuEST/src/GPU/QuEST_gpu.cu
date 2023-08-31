@@ -2174,21 +2174,21 @@ qreal densmatr_calcProbOfOutcome(Qureg qureg, int measureQubit, int outcome)
 // atomicAdd on floats/doubles isn't available on <6 CC devices, so we add it ourselves
 #if !defined(__CUDA_ARCH__) || __CUDA_ARCH__ >= 600
 #else
-static __inline__ __device__ double atomicAdd(double* address, double val)
-{
-    unsigned long long int* address_as_ull = (unsigned long long int*) address;
-    unsigned long long int old = *address_as_ull, assumed;
-
-    do {
-        assumed = old;
-        old = atomicCAS(address_as_ull, assumed,
-            __double_as_longlong(val + __longlong_as_double(assumed)));
-
-    // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
-    } while (assumed != old);
-
-    return __longlong_as_double(old);
-}
+// static __inline__ __device__ double atomicAdd(double* address, double val)
+// {
+//     unsigned long long int* address_as_ull = (unsigned long long int*) address;
+//     unsigned long long int old = *address_as_ull, assumed;
+// 
+//     do {
+//         assumed = old;
+//         old = atomicCAS(address_as_ull, assumed,
+//             __double_as_longlong(val + __longlong_as_double(assumed)));
+// 
+//     // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
+//     } while (assumed != old);
+// 
+//     return __longlong_as_double(old);
+// }
 #endif
 
 __global__ void statevec_calcProbOfAllOutcomesKernel(
